@@ -12,15 +12,18 @@
       <post-form @create="createPost" />
     </my-dialog>
 
+    <!--v-bind:posts="posts" -->
+    <!--v-bind:posts="sortedPosts" -->
     <post-list
       v-bind:posts="sortedAndSearchedPosts"
       @remove="removePost"
       v-if="!isPostsLoading"
     />
-    <!--v-bind:posts="posts" -->
+    
     <div v-else>Loading ...</div>
     <!--<div ref="observer" class="observer"></div>-->
     <div v-intersection="loadMorePosts" class="observer"></div>
+    
     <!--<div class="page__wrapper">
       <div
         class="page"
@@ -34,6 +37,7 @@
         {{ pageNumber }}
       </div>
     </div>-->
+    <Pagging v-bind:pageP="page" v-bind:totalPagesP="totalPages" @click="changePage"/>    
   </div>
 </template>
 
@@ -45,6 +49,8 @@ import MyButton from "@/components/UI/MyButton.vue";
 import axios from "axios";
 import MySelect from "@/components/UI/MySelect.vue";
 import MyInput from "@/components/UI/MyInput.vue";
+import Pagging from "@/components/Pagging.vue";
+
 export default {
   components: {
     PostList,
@@ -52,7 +58,8 @@ export default {
     MyDialog,
     MyButton,
     MySelect,
-    MyInput
+    MyInput,
+    Pagging,    
   },
   data() {
     return {
@@ -71,7 +78,7 @@ export default {
       searchQuery: "",
       page: 1,
       limit: 10,
-      totalPages: 0,
+      totalPages: 0,      
     };
   },
   methods: {
@@ -86,10 +93,11 @@ export default {
     showDialog() {
       this.dialogVisible = true;
     },
-    //changePage(pageNumber) {
-    //    this.page = pageNumber
-    //this.fetchPosts()
-    //},
+    changePage(pageNumber) {
+      console.log(pageNumber)
+      this.page = pageNumber      
+      this.fetchPosts()
+    },
     async fetchPosts() {
       try {
         this.isPostsLoading = true;
@@ -173,9 +181,9 @@ export default {
       //    return post1[newValue]?.localeCompare(post2[newValue])
       //})
     },
-    //page() {
-    //    this.fetchPosts()
-    //}
+    // page() {
+    //     this.fetchPosts()
+    // }
   },
 };
 </script>

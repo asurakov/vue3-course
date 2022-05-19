@@ -2,11 +2,13 @@
   <div>
     <!-- <h1>{{likes}}</h1>
     <button @click="addLike">Add</button> -->
+
     <h1>Page with posts</h1>
     <my-input v-model="searchQuery" placeholder="Search ..." v-focus />
     <div class="app__btns">
       <my-button @click="showDialog">Create post</my-button>
-      <my-button @click="fetchPosts">Get posts</my-button>
+      <my-button @click="fetchPosts">Get posts</my-button>      
+      <my-button @click="loadMorePosts">Get more posts</my-button>
       <my-select v-model="selectedSort" :options="sortOptions" />
     </div>
 
@@ -18,10 +20,10 @@
       v-bind:posts="sortedAndSearchedPosts"
       @remove="removePost"
       v-if="!isPostsLoading"
-    />    
-    <div v-else>Loading ...</div>    
-    <div v-intersection="loadMorePosts" class="observer"></div>
-
+    />
+    <div v-else>Loading ...</div>
+    <!-- <div v-intersection="loadMorePosts" class="observer"></div> -->
+    <Pagging v-bind:pageP="page" v-bind:totalPagesP="totalPages" @click="changePage"/>  
   </div>
 </template>
 
@@ -33,10 +35,11 @@ import MyButton from "@/components/UI/MyButton.vue";
 import axios from "axios";
 import MySelect from "@/components/UI/MySelect.vue";
 import MyInput from "@/components/UI/MyInput.vue";
-import {ref} from "vue";
+import { ref } from "vue";
 import usePosts from "@/hooks/usePosts";
 import useSortedPosts from "@/hooks/useSortedPosts";
 import useSortedAndSearchedPosts from "@/hooks/useSortedAndSearchedPosts";
+import Pagging from "@/components/Pagging.vue";
 
 export default {
   components: {
@@ -45,16 +48,30 @@ export default {
     MyDialog,
     MyButton,
     MySelect,
-    MyInput
+    MyInput,
+    Pagging
   },
   data() {
     return {
-      dialogVisible: false,
+      //dialogVisible: false,
       sortOptions: [
         { value: "title", name: "po title" },
         { value: "body", name: "po body" },
       ],
-    }
+    };
+  },
+  methods: {
+    // createPost(post) {
+    //   this.posts.push(post);
+    //   this.dialogVisible = false;
+    //   console.log(post);
+    // },
+    // removePost(post) {
+    //   this.posts = this.posts.filter((p) => p.id !== post.id);
+    // },
+    // showDialog() {
+    //   this.dialogVisible = true;
+    // },
   },
   setup(props) {
     // const likes = ref(0)
@@ -67,16 +84,20 @@ export default {
     //   addLike
     // }
 
-    const {posts, totalPages, isPostsLoading} = usePosts(10)
-    const {sortedPosts, selectedSort} = useSortedPosts(posts)
-    const {searchQuery, sortedAndSearchedPosts} = useSortedAndSearchedPosts(sortedPosts)
+    const { posts, totalPages, isPostsLoading, fetchPosts, loadMorePosts, page, createPost, showDialog, removePost, dialogVisible ,changePage } = usePosts(10);
+    const { sortedPosts, selectedSort } = useSortedPosts(posts);
+    const { searchQuery, sortedAndSearchedPosts } = useSortedAndSearchedPosts(sortedPosts);
 
     return {
-      posts, totalPages, isPostsLoading,
-      sortedPosts, selectedSort,
-      searchQuery, sortedAndSearchedPosts
-    }
-  }
+      posts,
+      totalPages,
+      isPostsLoading,fetchPosts,loadMorePosts,page, createPost, showDialog, removePost, dialogVisible, changePage,
+      sortedPosts,
+      selectedSort,
+      searchQuery,
+      sortedAndSearchedPosts,
+    };
+  },
 };
 </script>
 

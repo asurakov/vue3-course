@@ -19,28 +19,17 @@
       <post-form @create="createPost" />
     </my-dialog>
 
+    <!--v-bind:posts="posts" -->
     <post-list
-      v-bind:posts="sortedAndSearchedPosts"
+      v-bind:posts="sortedAndSearchedPosts"      
       @remove="removePost"
       v-if="!isPostsLoading"
     />
-    <!--v-bind:posts="posts" -->
+    
     <div v-else>Loading ...</div>
     <!--<div ref="observer" class="observer"></div>-->
     <div v-intersection="loadMorePosts" class="observer"></div>
-    <!--<div class="page__wrapper">
-      <div
-        class="page"
-        v-for="pageNumber in totalPages"
-        :key="pageNumber"
-        :class="{
-          current_page: page === pageNumber,
-        }"
-        @click="changePage(pageNumber)"
-      >
-        {{ pageNumber }}
-      </div>
-    </div>-->
+
   </div>
 </template>
 
@@ -49,7 +38,6 @@ import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import MyDialog from "@/components/UI/MyDialog.vue";
 import MyButton from "@/components/UI/MyButton.vue";
-import axios from "axios";
 import MySelect from "@/components/UI/MySelect.vue";
 import MyInput from "@/components/UI/MyInput.vue";
 import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
@@ -82,6 +70,7 @@ export default {
     },
   
     ...mapMutations({
+      setPosts: 'post/setPosts',
       setPage: 'post/setPage',
       setSearchQuery: 'post/setSearchQuery',
       setSelectedSort: 'post/setSelectedSort'
